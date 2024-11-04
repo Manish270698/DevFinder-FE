@@ -1,48 +1,41 @@
 import { useFormik } from "formik";
 import { useState } from "react";
-
-const validate = (values) => {
-  const errors = {};
-  if (!values.email) {
-    errors.email = "Invalid credentials!";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = "Invalid credentials!";
-  }
-
-  if (!values.password) {
-    errors.password = "Invalid credentials!";
-    // } else if (
-    //   !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.password)
-    // ) {
-  } else {
-    errors.password = "Invalid credentials!";
-  }
-
-  return errors;
-};
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [isClicked, setIsClicked] = useState(false);
   const [isSignUpClicked, setIsSignUpClicked] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [visible, setVisible] = useState(false);
-
-  const handleToggle = (set, value) => {
-    set(!value);
-  };
+  const [error, setError] = useState(null);
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    validate,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      try {
+        const { email, password } = values;
+        const data = await axios.post(
+          "http://localhost:7777/login",
+          {
+            emailId: email,
+            password: password,
+          },
+          { withCredentials: true }
+        );
+        setError(null);
+      } catch (err) {
+        // console.log("data: ", data);
+        setError(err.response?.data?.ERROR);
+      }
     },
   });
   return (
     <div className="flex justify-center mt-16 min-h-dvh">
-      <div className="w-[90%] sm:w-2/4 lg:w-2/6">
+      <div className="w-[90%] sm:w-3/5 lg:w-2/5 xl:w-2/6">
         <div className="relative items-center">
           <div className="absolute inset-0 bg-text"></div>
           <p className="relative p-4 bg-brand text-text font-bold text-3xl translate-x-2 -translate-y-2 border-2 border-text">
@@ -66,6 +59,7 @@ const Login = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}
+              placeholder="Email Id"
             />
 
             <label className="text-xl font-semibold" htmlFor="password">
@@ -80,9 +74,10 @@ const Login = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.password}
+                placeholder="Password"
               />
               <div
-                onClick={() => handleToggle(setVisible, visible)}
+                onClick={() => setVisible(!visible)}
                 className="flex bg-brand-white cursor-pointer items-center min-h-full border-2 border-l-0 border-text justify-center w-[10%]"
               >
                 {!visible ? (
@@ -92,7 +87,7 @@ const Login = () => {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="size-6"
+                    className="size-4 md:size-6"
                   >
                     <path
                       strokeLinecap="round"
@@ -112,7 +107,7 @@ const Login = () => {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="size-6"
+                    className="size-4 md:size-6"
                   >
                     <path
                       strokeLinecap="round"
@@ -123,45 +118,65 @@ const Login = () => {
                 )}
               </div>
             </div>
-            {(formik.touched.email && formik.errors.email) ||
+            {/* {(formik.touched.email && formik.errors.email) ||
             (formik.touched.password && formik.errors.password) ? (
               <div className="block min-w-full text-text-error">
                 {formik.errors.password}
               </div>
-            ) : null}
+            ) : null} */}
+            <div className="block min-w-full text-text-error">{error}</div>
 
             <div className="flex min-w-full max-w-full items-center justify-between">
-              <div className="relative left-0 mt-4">
-                <div className="absolute inset-0 bg-text"></div>
+              <div className="relative left-0 mt-4 w-[25%]">
+                <div className="absolute inset-0 bg-text min-w-full"></div>
                 <button
-                  className={`font-semibold relative text-xl block border-2 translate-x-2 -translate-y-2 border-text p-2 bg-brand-white ${
-                    isClicked ? "-translate-x-0 translate-y-0" : ""
+                  className={`font-semibold relative text-lg md:text-xl min-w-full block border-2 border-text p-2 bg-brand-white ${
+                    isClicked
+                      ? "-translate-x-0 translate-y-0"
+                      : "translate-x-2 -translate-y-2"
                   }`}
                   type="submit"
-                  onMouseDown={() => handleToggle(setIsClicked, isClicked)}
-                  onMouseUp={() => handleToggle(setIsClicked, isClicked)}
+                  onMouseDown={() => setIsClicked(!isClicked)}
+                  onMouseUp={() => setIsClicked(!isClicked)}
                 >
-                  Submit
+                  Sign In
                 </button>
               </div>
-              <div className="relative left-0 mt-4">
-                <div className="absolute inset-0 bg-text"></div>
-                <div className="absolute inset-0 bg-text"></div>
+
+              <Link
+                to="/forgotpassword"
+                className="relative left-0 mt-4 w-[40%]"
+              >
+                <div className="absolute inset-0 min-w-full bg-text"></div>
                 <button
-                  className={`font-semibold relative text-xl block border-2 translate-x-2 -translate-y-2 border-text p-2 bg-brand-white ${
-                    isSignUpClicked ? "-translate-x-0 translate-y-0" : ""
+                  className={`font-semibold relative text-sm min-w-full block border-2 border-text p-1 bg-brand-white ${
+                    isForgotPassword
+                      ? "-translate-x-0 translate-y-0"
+                      : "translate-x-2 -translate-y-2"
                   }`}
                   type="button"
-                  onMouseDown={() =>
-                    handleToggle(setIsSignUpClicked, isSignUpClicked)
-                  }
-                  onMouseUp={() =>
-                    handleToggle(setIsSignUpClicked, isSignUpClicked)
-                  }
+                  onMouseDown={() => setIsForgotPassword(!isForgotPassword)}
+                  onMouseUp={() => setIsForgotPassword(!isForgotPassword)}
+                >
+                  Forgot Password
+                </button>
+              </Link>
+
+              <Link to="/signup" className="relative left-0 mt-4 w-[25%]">
+                <div className="absolute inset-0 min-w-full bg-text"></div>
+                <button
+                  className={`font-semibold relative text-lg md:text-xl min-w-full block border-2 border-text p-2 bg-brand-white ${
+                    isSignUpClicked
+                      ? "-translate-x-0 translate-y-0"
+                      : "translate-x-2 -translate-y-2"
+                  }`}
+                  type="button"
+                  onMouseDown={() => setIsSignUpClicked(!isSignUpClicked)}
+                  onMouseUp={() => setIsSignUpClicked(!isSignUpClicked)}
                 >
                   Sign Up
                 </button>
-              </div>
+              </Link>
             </div>
           </form>
         </div>

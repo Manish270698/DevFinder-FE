@@ -14,10 +14,12 @@ export default {
         light: "#242322",
         body: "#fff0e5",
         white: "#ffffff",
+        reject: "#f75134",
+        accept: "#25e31b",
       },
       text: {
         DEFAULT: "#000000",
-        light: "#8dbbf7",
+        light: "#7a7a79",
         error: "#e60b21",
         input: "#ffe2a8",
       },
