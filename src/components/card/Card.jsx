@@ -1,23 +1,31 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Hammer from "hammerjs";
+import { XMarkIcon, CheckIcon } from "@heroicons/react/16/solid";
+import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { addFeed } from "../../utils/feedSlice";
 
-const Card = () => {
+const Card = ({ user }) => {
   const cardRef = useRef(null);
   const [isSwiping, setIsSwiping] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isRejected, setIsRejected] = useState(false);
   const [isInterested, setIsInterested] = useState(false);
-  let a = 10;
+  let feed = useSelector((store) => store.feed);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const hammer = new Hammer(cardRef.current);
-    console.log(isRejected);
     hammer.get("pan").set({ direction: Hammer.DIRECTION_ALL });
-    hammer.on("panstart", () => {
-      setIsSwiping(true);
-      console.log(isSwiping);
-    });
+    hammer.on(
+      "panstart",
+      () => {
+        setIsSwiping(true);
+        console.log(isSwiping);
+      },
+      []
+    );
 
     hammer.on("panmove", (event) => {
       setPosition({
@@ -30,7 +38,7 @@ const Card = () => {
       setIsSwiping(false);
       console.log(event.deltaX, event.deltaY);
       // choose based on pan position
-      if (event.deltaX < -180) {
+      if (event.deltaX < -100) {
         cardRef.current.animate(
           [
             {
@@ -50,7 +58,9 @@ const Card = () => {
             easing: "ease-out",
           }
         );
-      } else if (event.deltaX > 180) {
+        feed = feed?.filter((card) => card._id !== user._id);
+        dispatch(addFeed(feed));
+      } else if (event.deltaX > 100) {
         cardRef.current.animate(
           [
             {
@@ -70,6 +80,8 @@ const Card = () => {
             easing: "ease-out",
           }
         );
+        feed = feed?.filter((card) => card._id !== user._id);
+        dispatch(addFeed(feed));
       } else {
         setPosition({
           x: 0,
@@ -86,7 +98,7 @@ const Card = () => {
   return (
     <div
       ref={cardRef}
-      className={`relative w-[80%] h-[80%] sm:w-[45%] lg:w-[35%] xl:w-[22%] ${
+      className={`relative w-[80%] h-[75%] sm:w-[45%] lg:w-[35%] xl:w-[22%] ${
         isRejected
           ? "animate-swipe-left"
           : isInterested
@@ -102,22 +114,29 @@ const Card = () => {
     >
       <div className="absolute inset-0 min-w-full bg-text"></div>
       <div className="w-[100%] h-[100%] border-2 border-text relative translate-x-2 -translate-y-2">
-        {/* <p>Wow! You swiped everyone</p> */}
         <div className="h-[80%] relative">
           <img
-            src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRLtXMA-xdlwapKJYWwk-nPxd6SgznCPjD0q8xHDxAzoa8qqTHX"
+            src={user.photoUrl}
             alt="Profile image"
-            className="absolute z-0 h-[100%] w-[100%] object-cover"
+            className="absolute z-0 h-[100%] w-[100%] object-cover bg-brand-light"
           />
-          <div className=" z-10 h-[75%] w-[100%]"></div>
+          <div className="flex justify-center items-center h-[75%] w-[100%]">
+            {position.x < -100 ? (
+              <XMarkIcon className="absolute size-60 text-brand-reject" />
+            ) : position.x > 100 ? (
+              <CheckIcon className="absolute size-60 text-brand-accept" />
+            ) : (
+              ""
+            )}
+          </div>
           <div className="absolute h-[25%] w-[100%] bg-gradient-to-t from-text"></div>
           <div className="h-[25%] w-[100%] flex flex-col items-start justify-end gap-2 pb-4 pl-4 relative text-brand-white">
             <div className="w-[100%]">
-              <p className="">Manish Kumar, 27</p>
+              <p className="">
+                {user?.firstName + " " + user?.lastName + ", " + user?.age}
+              </p>
             </div>
-            <p className="w-[100%] block">
-              React, NodeJS, Express, React, NodeJS, Express
-            </p>
+            <p className="w-[100%] block">{user?.skills.join(", ")}</p>
           </div>
         </div>
         <div className="bg-brand h-[20%] w-[100%] flex items-center justify-center p-4">
@@ -134,9 +153,11 @@ const Card = () => {
                 onClick={() => {
                   setIsRejected(!isRejected);
                   setIsRejected(!isRejected);
+                  feed = feed?.filter((card) => card._id !== user._id);
+                  dispatch(addFeed(feed));
                 }}
               >
-                Reject
+                Ignore
               </button>
             </Link>
             <Link className="relative left-0">
@@ -151,6 +172,8 @@ const Card = () => {
                 onClick={() => {
                   setIsInterested(!isInterested);
                   setIsInterested(!isInterested);
+                  feed = feed?.filter((card) => card._id !== user._id);
+                  dispatch(addFeed(feed));
                 }}
               >
                 Interested
@@ -161,6 +184,10 @@ const Card = () => {
       </div>
     </div>
   );
+};
+
+Card.propTypes = {
+  user: PropTypes.object.isRequired,
 };
 
 // var hammertime = new Hammer(Card);

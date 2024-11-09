@@ -16,6 +16,7 @@ export default {
         white: "#ffffff",
         reject: "#f75134",
         accept: "#25e31b",
+        shimmer: "#e8ebe9",
       },
       text: {
         DEFAULT: "#000000",

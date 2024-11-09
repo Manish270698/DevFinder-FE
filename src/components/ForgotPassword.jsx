@@ -80,7 +80,8 @@ const ForgotPassword = () => {
                 placeholder="Password"
               />
               <div
-                onClick={() => setVisible(!visible)}
+                onMouseDown={() => setVisible(!visible)}
+                onMouseUp={() => setVisible(!visible)}
                 className="flex bg-brand-white cursor-pointer items-center min-h-full border-2 border-l-0 border-text justify-center w-[10%]"
               >
                 {!visible ? (
@@ -140,7 +141,8 @@ const ForgotPassword = () => {
                 placeholder="Re-enter Password"
               />
               <div
-                onClick={() => setVisible(!visible)}
+                onMouseDown={() => setVisible(!visible)}
+                onMouseUp={() => setVisible(!visible)}
                 className="flex bg-brand-white cursor-pointer items-center min-h-full border-2 border-l-0 border-text justify-center w-[10%]"
               >
                 {!visible ? (

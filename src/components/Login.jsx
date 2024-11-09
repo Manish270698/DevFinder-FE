@@ -1,9 +1,14 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
+import { BASE_URL } from "../constants";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isClicked, setIsClicked] = useState(false);
   const [isSignUpClicked, setIsSignUpClicked] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -18,8 +23,8 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         const { email, password } = values;
-        const data = await axios.post(
-          "http://localhost:7777/login",
+        const res = await axios.post(
+          BASE_URL + "/login",
           {
             emailId: email,
             password: password,
@@ -27,14 +32,18 @@ const Login = () => {
           { withCredentials: true }
         );
         setError(null);
+        dispatch(addUser(res.data.user));
+        navigate("/");
       } catch (err) {
-        // console.log("data: ", data);
-        setError(err.response?.data?.ERROR);
+        setError(err?.response?.data?.ERROR);
       }
     },
   });
   return (
-    <div className="flex justify-center mt-16 min-h-dvh">
+    <div
+      className="flex justify-center mt-16 min-h-dvh"
+      onMouseUp={() => setVisible(false)}
+    >
       <div className="w-[90%] sm:w-3/5 lg:w-2/5 xl:w-2/6">
         <div className="relative items-center">
           <div className="absolute inset-0 bg-text"></div>
@@ -77,7 +86,7 @@ const Login = () => {
                 placeholder="Password"
               />
               <div
-                onClick={() => setVisible(!visible)}
+                onMouseDown={() => setVisible(true)}
                 className="flex bg-brand-white cursor-pointer items-center min-h-full border-2 border-l-0 border-text justify-center w-[10%]"
               >
                 {!visible ? (
@@ -118,13 +127,15 @@ const Login = () => {
                 )}
               </div>
             </div>
-            {/* {(formik.touched.email && formik.errors.email) ||
+            {(formik.touched.email && formik.errors.email) ||
             (formik.touched.password && formik.errors.password) ? (
               <div className="block min-w-full text-text-error">
                 {formik.errors.password}
               </div>
-            ) : null} */}
-            <div className="block min-w-full text-text-error">{error}</div>
+            ) : null}
+            <div className="flex min-w-full max-w-full items-center justify-between text-text-error">
+              {error}
+            </div>
 
             <div className="flex min-w-full max-w-full items-center justify-between">
               <div className="relative left-0 mt-4 w-[25%]">
