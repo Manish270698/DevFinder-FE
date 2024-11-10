@@ -5,10 +5,12 @@ import { BASE_URL } from "../../constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../../utils/userSlice";
 import ProfileCard from "./ProfileCard";
+import Toast from "./Toast";
 
 const EditProfile = () => {
   const [isClicked, setIsClicked] = useState(false);
   const [error, setError] = useState(null);
+  const [seeToast, setSeeToast] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
   const formik = useFormik({
@@ -58,6 +60,8 @@ const EditProfile = () => {
         );
         setError(null);
         dispatch(addUser(res.data.loggedInUser));
+        setSeeToast(true);
+        setTimeout(() => setSeeToast(false), 3000);
       } catch (err) {
         setError(err.response?.data?.ERROR);
       }
@@ -65,13 +69,14 @@ const EditProfile = () => {
   });
   return (
     <div className="flex flex-wrap justify-center gap-x-8">
+      {seeToast && <Toast />}
       <div className="flex justify-center text-sm md:text-md lg:text-xl mt-10 md:mt-16 min-h-dvh w-[90%] md:w-1/3 xl:w-2/5">
         <div className="">
           <div className="relative items-center">
             <div className="absolute inset-0 w-[60%] bg-text"></div>
-            <p className="relative p-2 lg:p-4 w-[60%] bg-brand text-text font-bold text-lg lg:text-2xl translate-x-2 -translate-y-2 border-2 border-text">
+            <h1 className="relative p-2 lg:p-4 w-[60%] bg-brand text-text font-bold text-lg lg:text-2xl translate-x-2 -translate-y-2 border-2 border-text">
               Your Profile
-            </p>
+            </h1>
           </div>
           <div className="relative">
             <div className="absolute inset-0 bg-text"></div>
@@ -223,8 +228,9 @@ const EditProfile = () => {
                         : "translate-x-2 -translate-y-2"
                     }`}
                     type="submit"
-                    onMouseDown={() => setIsClicked(!isClicked)}
-                    onMouseUp={() => setIsClicked(!isClicked)}
+                    onMouseDown={() => setIsClicked(true)}
+                    onMouseUp={() => setIsClicked(false)}
+                    onMouseLeave={() => setIsClicked(false)}
                   >
                     Save Profile
                   </button>

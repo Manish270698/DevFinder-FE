@@ -66,9 +66,9 @@ const SignUp = () => {
       <div className="w-[90%] sm:w-3/5 lg:w-1/2 xl:w-2/5">
         <div className="relative items-center">
           <div className="absolute inset-0 bg-text"></div>
-          <p className="relative p-4 bg-brand text-text font-bold text-lg lg:text-2xl translate-x-2 -translate-y-2 border-2 border-text">
+          <h1 className="relative p-4 bg-brand text-text font-bold text-lg lg:text-2xl translate-x-2 -translate-y-2 border-2 border-text">
             SignUp on DevFinder
-          </p>
+          </h1>
         </div>
         <div className="relative">
           <div className="absolute inset-0 bg-text"></div>
@@ -231,7 +231,7 @@ const SignUp = () => {
             <div className="block min-w-full text-text-error">{error}</div>
 
             <div className="flex min-w-full max-w-full items-center justify-between">
-              <div className="relative left-0 mt-4">
+              <div className="relative left-0 mt-4 mr-4">
                 <div className="absolute inset-0 bg-text"></div>
                 <button
                   className={`font-semibold relative block border-2 border-text p-2 bg-brand-white ${
@@ -247,7 +247,7 @@ const SignUp = () => {
                 </button>
               </div>
 
-              <Link to="/login" className="relative left-0 mt-4">
+              <Link to="/login" className="relative left-0 mt-4 ml-4">
                 <div className="absolute inset-0 bg-text"></div>
                 <div className="absolute inset-0 bg-text"></div>
                 <button

@@ -8,6 +8,8 @@ import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import Error from "./components/Error";
 import Profile from "./components/profile/Profile";
+import Connections from "./components/connections/Connections";
+import Requests from "./components/requests/Requests";
 
 const App = () => {
   return (
@@ -21,6 +23,8 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/connections" element={<Connections />} />
+              <Route path="/requests" element={<Requests />} />
               <Route path="/forgotpassword" element={<ForgotPassword />} />
             </Route>
           </Routes>

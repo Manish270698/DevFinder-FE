@@ -6,12 +6,12 @@ const ProfileCard = ({ user }) => {
   const { firstName, lastName, age, skills, photoUrl } = user;
   return (
     <div className="flex justify-start md:justify-center text-sm md:text-lg lg:text-xl mt-10 md:mt-16 min-h-dvh w-[90%] md:w-2/5">
-      <div className="w-[70%] sm:w-[50%] md:w-[90%] lg:w-[70%] xl:w-[55%]">
+      <div className="w-[80%] sm:w-[50%] md:w-[90%] lg:w-[70%] xl:w-[55%]">
         <div className="relative items-center">
           <div className="absolute inset-0 w-[50%] bg-text"></div>
-          <p className="relative p-2 lg:p-4 w-[50%] bg-brand text-text font-bold text-lg lg:text-2xl translate-x-2 -translate-y-2 border-2 border-text">
+          <h1 className="relative p-2 lg:p-4 w-[50%] bg-brand text-text font-bold text-lg lg:text-2xl translate-x-2 -translate-y-2 border-2 border-text">
             Preview
-          </p>
+          </h1>
         </div>
         <div className="relative h-[80%] md:h-[60%] lg:h-[55%]">
           <div className="absolute inset-0 min-w-52 bg-text"></div>
@@ -46,19 +46,19 @@ const ProfileCard = ({ user }) => {
             </div>
             <div className="bg-brand h-[20%] w-[100%] flex items-center justify-center p-4">
               <div className="w-[100%] relative flex flex-wrap justify-between">
-                <Link className="relative left-0">
+                <Link className="relative left-0 cursor-auto">
                   <div className="absolute inset-0 min-w-full bg-text"></div>
                   <button
-                    className="font-semibold relative p-1 md:p-2 text-lg md:text-xl translate-x-2 -translate-y-2 min-w-full border-2 border-text bg-brand-reject "
+                    className="font-semibold relative p-1 md:p-2 cursor-auto text-lg md:text-xl translate-x-2 -translate-y-2 min-w-full border-2 border-text bg-brand-reject "
                     type="button"
                   >
                     Ignore
                   </button>
                 </Link>
-                <Link className="relative left-0">
+                <Link className="relative left-0 cursor-auto">
                   <div className="absolute inset-0 min-w-full bg-text"></div>
                   <button
-                    className="font-semibold relative p-1 md:p-2 text-lg md:text-xl min-w-full translate-x-2 -translate-y-2 border-2 border-text bg-brand-accept"
+                    className="font-semibold relative p-1 md:p-2 cursor-auto text-lg md:text-xl min-w-full translate-x-2 -translate-y-2 border-2 border-text bg-brand-accept"
                     type="button"
                   >
                     Interested

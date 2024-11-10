@@ -97,7 +97,7 @@ const Card = ({ user }) => {
   return (
     <div
       ref={cardRef}
-      className={`relative w-[65%] h-[80%] lg:h-[75%] sm:w-[50%] lg:w-[30%] xl:w-[22%]  md:w-[35%] ${
+      className={`relative w-[80%] h-[70%] lg:h-[75%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w-[22%]  md:w-[35%] ${
         isRejected
           ? "animate-swipe-left"
           : isInterested
