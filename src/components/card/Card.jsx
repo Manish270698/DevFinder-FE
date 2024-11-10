@@ -94,11 +94,10 @@ const Card = ({ user }) => {
       hammer.destroy();
     };
   }, []);
-
   return (
     <div
       ref={cardRef}
-      className={`relative w-[80%] h-[75%] sm:w-[45%] lg:w-[35%] xl:w-[22%] ${
+      className={`relative w-[65%] h-[80%] lg:h-[75%] sm:w-[50%] lg:w-[30%] xl:w-[22%]  md:w-[35%] ${
         isRejected
           ? "animate-swipe-left"
           : isInterested
@@ -130,13 +129,22 @@ const Card = ({ user }) => {
             )}
           </div>
           <div className="absolute h-[25%] w-[100%] bg-gradient-to-t from-text"></div>
-          <div className="h-[25%] w-[100%] flex flex-col items-start justify-end gap-2 pb-4 pl-4 relative text-brand-white">
+          <div className="h-[25%] w-[100%] flex flex-col items-start justify-end gap-2 pb-4 px-4 relative text-brand-white">
             <div className="w-[100%]">
               <p className="">
                 {user?.firstName + " " + user?.lastName + ", " + user?.age}
               </p>
             </div>
-            <p className="w-[100%] block">{user?.skills.join(", ")}</p>
+            <div className="flex flex-wrap gap-2">
+              {user?.skills.map((skill, index) => (
+                <p
+                  key={index}
+                  className="inline-block text-sm lg:text-lg px-1 border-2 border-brand-white"
+                >
+                  {skill}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
         <div className="bg-brand h-[20%] w-[100%] flex items-center justify-center p-4">
@@ -189,7 +197,5 @@ const Card = ({ user }) => {
 Card.propTypes = {
   user: PropTypes.object.isRequired,
 };
-
-// var hammertime = new Hammer(Card);
 
 export default Card;
