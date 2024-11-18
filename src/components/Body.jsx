@@ -16,19 +16,24 @@ const Body = () => {
   const loggedInUser = useSelector((store) => store.user);
   const fetchUser = async () => {
     try {
-      if (!(currentPath === "/")) {
-        const user = await axios.get(BASE_URL + "/profile/view", {
-          withCredentials: true,
-        });
-        if (user) {
-          dispatch(addUser(user.data.user));
-        }
+      const user = await axios.get(BASE_URL + "/profile/view", {
+        withCredentials: true,
+      });
+      if (user) {
+        dispatch(addUser(user.data.user));
+        console.log(user);
+      }
+      if (currentPath === "/login") {
+        navigate("/");
       }
     } catch (err) {
-      if (err.status === 401) {
+      if (err.status === 401 && currentPath === "/") {
+        navigate("/");
+      } else if (err.status === 401) {
         console.log("from Body");
         navigate("/login");
       } else {
+        console.log("Error from Body");
         navigate("/error");
       }
     }

@@ -1,11 +1,30 @@
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import axios from "axios";
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { BASE_URL } from "../../constants";
+import { useNavigate } from "react-router-dom";
 
-const RequestCard = ({ request }) => {
+const RequestCard = ({ request, updateRequest }) => {
   const [accept, setAccept] = useState(false);
   const [reject, setReject] = useState(false);
+  const navigate = useNavigate();
 
+  const handleReview = async (status, _id) => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/request/review/" + status + "/" + _id,
+        {},
+        { withCredentials: true }
+      );
+
+      updateRequest(_id);
+    } catch (err) {
+      navigate("/error");
+    }
+  };
+
+  const { _id } = request;
   const { photoUrl, firstName, lastName, age, about } = request.fromUserId;
   return (
     <div className="flex justify-center text-sm md:text-lg lg:lg:text-xl mt-6">
@@ -35,6 +54,7 @@ const RequestCard = ({ request }) => {
               onMouseDown={() => setAccept(true)}
               onMouseUp={() => setAccept(false)}
               onMouseLeave={() => setAccept(false)}
+              onClick={() => handleReview("accepted", _id)}
             >
               <CheckCircleIcon
                 className={`p-2 ${accept ? "size-10" : "size-11"}`}
@@ -47,6 +67,7 @@ const RequestCard = ({ request }) => {
               onMouseDown={() => setReject(true)}
               onMouseUp={() => setReject(false)}
               onMouseLeave={() => setReject(false)}
+              onClick={() => handleReview("rejected", _id)}
             >
               <XCircleIcon
                 className={`p-2 ${reject ? "size-10" : "size-11"}`}
@@ -61,6 +82,7 @@ const RequestCard = ({ request }) => {
 
 RequestCard.propTypes = {
   request: PropTypes.object.isRequired,
+  updateRequest: PropTypes.func.isRequired,
 };
 
 export default RequestCard;

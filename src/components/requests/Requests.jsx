@@ -13,7 +13,6 @@ const Requests = () => {
       const res = await axios.get(BASE_URL + "/user/requests/received", {
         withCredentials: true,
       });
-      console.log("requests :", res.data.data);
       setRequests(res.data.data);
     } catch (err) {
       navigate("/error");
@@ -23,6 +22,12 @@ const Requests = () => {
   useEffect(() => {
     conns();
   }, []);
+
+  const updateRequest = (idToRemove) => {
+    setRequests((prevRequests) =>
+      prevRequests.filter((request) => request._id !== idToRemove)
+    );
+  };
 
   return (
     <div className="flex justify-center items-center">
@@ -37,7 +42,7 @@ const Requests = () => {
           <div>
             {requests.map((request) => (
               <div key={request._id}>
-                <RequestCard request={request} />
+                <RequestCard request={request} updateRequest={updateRequest} />
               </div>
             ))}
           </div>

@@ -19,8 +19,7 @@ const Navbar = () => {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
       setIsSignOutClicked(false);
-      setIsImageClicked(!isImageClicked);
-      console.log("from Navbar");
+      setIsImageClicked(false);
       navigate("/login");
     } catch (err) {
       navigate("/error");
@@ -30,7 +29,7 @@ const Navbar = () => {
   const handleProfile = () => {
     navigate("/profile");
     setIsProfileClicked(false);
-    setIsImageClicked(!isImageClicked);
+    setIsImageClicked(false);
   };
 
   return (
@@ -48,16 +47,20 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="flex items-center gap-10 text-base font-semibold">
-          <Link
-            to="/connections"
-            title="connections"
-            className="cursor-pointer"
-          >
-            <LinkIcon className="size-6 text-text" />
-          </Link>
-          <Link to="/requests" title="requests" className="cursor-pointer">
-            <BellIcon className="size-6 text-text" />
-          </Link>
+          {user && (
+            <Link
+              to="/connections"
+              title="connections"
+              className="cursor-pointer"
+            >
+              <LinkIcon className="size-6 text-text" />
+            </Link>
+          )}
+          {user && (
+            <Link to="/requests" title="requests" className="cursor-pointer">
+              <BellIcon className="size-6 text-text" />
+            </Link>
+          )}
           {user && (
             <div className="relative">
               <img
@@ -74,22 +77,16 @@ const Navbar = () => {
                   onMouseLeave={() => {
                     setIsImageClicked(false);
                   }}
-                  className="absolute z-10 right-0 mt-1 before:absolute before:bg-text before:min-w-full before:min-h-full before:-translate-x-2 before:translate-y-2"
+                  className="absolute z-20 right-0 mt-1 before:absolute before:bg-text before:min-w-full before:min-h-full before:-translate-x-2 before:translate-y-2"
                 >
                   <li
                     className={`cursor-pointer relative hover:bg-brand whitespace-nowrap p-2 bg-brand-body border-2 border-text ${
                       isProfileClicked ? "-translate-x-2 translate-y-2" : ""
                     }`}
-                    onMouseDown={() => {
+                    onClick={(e) => {
                       setIsProfileClicked(true);
                       handleProfile();
-                    }}
-                    onMouseUp={() => {
-                      setIsProfileClicked(false);
-                      handleSignOut();
-                    }}
-                    onMouseLeave={() => {
-                      setIsProfileClicked(false);
+                      e.stopPropagation();
                     }}
                   >
                     <p className="">Profile</p>
@@ -98,15 +95,10 @@ const Navbar = () => {
                     className={`cursor-pointer relative hover:bg-brand whitespace-nowrap p-2 bg-brand-body border-2 border-text ${
                       isSignOutClicked ? "-translate-x-2 translate-y-2" : ""
                     }`}
-                    onMouseDown={() => {
+                    onClick={(e) => {
                       setIsSignOutClicked(true);
                       handleSignOut();
-                    }}
-                    onMouseUp={() => {
-                      setIsSignOutClicked(false);
-                    }}
-                    onMouseLeave={() => {
-                      setIsSignOutClicked(false);
+                      e.stopPropagation();
                     }}
                   >
                     <p>SignOut</p>

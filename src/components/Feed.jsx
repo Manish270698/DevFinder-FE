@@ -46,7 +46,6 @@ const Feed = () => {
   }, []);
   return feed && feed.length === 0 ? (
     <>
-      {console.log(feed.length)}
       <div className="flex h-screen justify-center items-center text-xl text-text border-">
         <p className="flex w-[80%] h-[75%] sm:w-[45%] lg:w-[35%] xl:w-[22%] justify-center items-center text-center">
           Wow!!! you swiped everyone. Come back later.
@@ -56,7 +55,6 @@ const Feed = () => {
   ) : feed ? (
     <div className="h-screen w-[100%] relative">
       {feed.map((card, index) => {
-        console.log(card._id);
         return (
           <div
             key={card._id}

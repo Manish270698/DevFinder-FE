@@ -13,6 +13,7 @@ const EditProfile = () => {
   const [seeToast, setSeeToast] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
+  console.log(user.gender);
   const formik = useFormik({
     initialValues: {
       firstName: user.firstName,

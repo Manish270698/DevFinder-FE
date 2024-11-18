@@ -12,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [isClicked, setIsClicked] = useState(false);
   const [isSignUpClicked, setIsSignUpClicked] = useState(false);
-  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  // const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(null);
 
@@ -117,8 +117,9 @@ const Login = () => {
                       : "translate-x-2 -translate-y-2"
                   }`}
                   type="submit"
-                  onMouseDown={() => setIsClicked(!isClicked)}
-                  onMouseUp={() => setIsClicked(!isClicked)}
+                  onMouseDown={() => setIsClicked(true)}
+                  onMouseUp={() => setIsClicked(false)}
+                  onMouseLeave={() => setIsClicked(false)}
                 >
                   Sign In
                 </button>
@@ -155,8 +156,9 @@ const Login = () => {
                       : "translate-x-2 -translate-y-2"
                   }`}
                   type="button"
-                  onMouseDown={() => setIsSignUpClicked(!isSignUpClicked)}
-                  onMouseUp={() => setIsSignUpClicked(!isSignUpClicked)}
+                  onMouseDown={() => setIsSignUpClicked(true)}
+                  onMouseUp={() => setIsSignUpClicked(true)}
+                  onMouseLeave={() => setIsSignUpClicked(false)}
                 >
                   Sign Up
                 </button>

@@ -4,6 +4,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../constants";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const SignUp = () => {
   const [isClicked, setIsClicked] = useState(false);
@@ -11,6 +13,7 @@ const SignUp = () => {
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
@@ -55,7 +58,8 @@ const SignUp = () => {
           { withCredentials: true }
         );
         setError(null);
-        navigate("/login");
+        dispatch(addUser(res.data.user));
+        navigate("/profile");
       } catch (err) {
         setError(err.response?.data?.ERROR);
       }
@@ -170,7 +174,7 @@ const SignUp = () => {
               </div>
               <div className="w-[50%]">
                 <select
-                  className="h-10 border-box block border-2 p-2 border-text min-w-full focus:outline-none"
+                  className="h-10 border-box block border-2 p-2 bg-brand-white border-text min-w-full focus:outline-none"
                   id="gender"
                   name="gender"
                   onChange={formik.handleChange}
@@ -179,9 +183,9 @@ const SignUp = () => {
                   placeholder="gender"
                 >
                   <option value="">Select</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Others">Others</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="others">Others</option>
                 </select>
               </div>
             </div>

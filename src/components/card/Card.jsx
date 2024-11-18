@@ -1,44 +1,58 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Hammer from "hammerjs";
 import { XMarkIcon, CheckIcon } from "@heroicons/react/16/solid";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { addFeed } from "../../utils/feedSlice";
+import { removeFeed } from "../../utils/feedSlice";
+import axios from "axios";
+import { BASE_URL } from "../../constants";
 
 const Card = ({ user }) => {
   const cardRef = useRef(null);
   const [isSwiping, setIsSwiping] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isRejected, setIsRejected] = useState(false);
+  const [isIgnored, setIsIgnored] = useState(false);
   const [isInterested, setIsInterested] = useState(false);
-  let feed = useSelector((store) => store.feed);
+  const loggedInUser = useSelector((store) => store.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const hammer = new Hammer(cardRef.current);
-    hammer.get("pan").set({ direction: Hammer.DIRECTION_ALL });
-    hammer.on(
-      "panstart",
-      () => {
-        setIsSwiping(true);
-        console.log(isSwiping);
-      },
-      []
-    );
+  const sendToUser = async (status, _id) => {
+    try {
+      if (!loggedInUser) {
+        navigate("/login");
+        return;
+      }
+      dispatch(removeFeed(_id));
+      const res = await axios.post(
+        BASE_URL + "/request/send/" + status + "/" + _id,
+        {},
+        { withCredentials: true }
+      );
+      setIsIgnored(false);
+      setIsInterested(false);
+    } catch (err) {
+      navigate("/error");
+    }
+  };
 
-    hammer.on("panmove", (event) => {
-      setPosition({
-        x: event.deltaX,
-        y: event.deltaY,
-      });
+  const handlePanStart = () => {
+    setIsSwiping(true);
+  };
+
+  const handlePanMove = (event) => {
+    setPosition({
+      x: event.deltaX,
+      y: event.deltaY,
     });
+  };
 
-    hammer.on("panend", (event) => {
-      setIsSwiping(false);
-      console.log(event.deltaX, event.deltaY);
-      // choose based on pan position
-      if (event.deltaX < -100) {
+  const handlePanEnd = async (event) => {
+    setIsSwiping(false);
+    // choose based on pan position
+    if (event.deltaX < -100) {
+      await new Promise((res, rej) => {
         cardRef.current.animate(
           [
             {
@@ -58,9 +72,11 @@ const Card = ({ user }) => {
             easing: "ease-out",
           }
         );
-        feed = feed?.filter((card) => card._id !== user._id);
-        dispatch(addFeed(feed));
-      } else if (event.deltaX > 100) {
+        setTimeout(res, 100);
+      });
+      sendToUser("ignored", user._id);
+    } else if (event.deltaX > 100) {
+      await new Promise((res, rej) => {
         cardRef.current.animate(
           [
             {
@@ -80,17 +96,30 @@ const Card = ({ user }) => {
             easing: "ease-out",
           }
         );
-        feed = feed?.filter((card) => card._id !== user._id);
-        dispatch(addFeed(feed));
-      } else {
-        setPosition({
-          x: 0,
-          y: 0,
-        });
-      }
-    });
+        setTimeout(res, 100);
+      });
+      sendToUser("interested", user._id);
+    } else {
+      setPosition({
+        x: 0,
+        y: 0,
+      });
+    }
+  };
+
+  useEffect(() => {
+    const hammer = new Hammer(cardRef.current);
+    hammer.get("pan").set({ direction: Hammer.DIRECTION_ALL });
+    hammer.on("panstart", handlePanStart);
+
+    hammer.on("panmove", handlePanMove);
+
+    hammer.on("panend", handlePanEnd);
 
     return () => {
+      hammer.off("panstart", handlePanStart);
+      hammer.off("panmove", handlePanMove);
+      hammer.off("panend", handlePanEnd);
       hammer.destroy();
     };
   }, []);
@@ -98,7 +127,7 @@ const Card = ({ user }) => {
     <div
       ref={cardRef}
       className={`relative w-[80%] h-[70%] lg:h-[75%] sm:w-[50%] md:w-[40%] lg:w-[30%] xl:w-[22%]  md:w-[35%] ${
-        isRejected
+        isIgnored
           ? "animate-swipe-left"
           : isInterested
           ? "animate-swipe-right"
@@ -149,26 +178,27 @@ const Card = ({ user }) => {
         </div>
         <div className="bg-brand h-[20%] w-[100%] flex items-center justify-center p-4">
           <div className="w-[100%] relative flex flex-wrap justify-between">
-            <Link className="relative left-0">
+            <div className="relative left-0">
               <div className="absolute inset-0 min-w-full bg-text"></div>
               <button
                 className={`font-semibold relative text-lg md:text-xl min-w-full border-2 border-text p-2 bg-brand-reject ${
-                  isRejected
+                  isIgnored
                     ? "-translate-x-0 translate-y-0"
                     : "translate-x-2 -translate-y-2"
                 }`}
                 type="button"
-                onClick={() => {
-                  setIsRejected(!isRejected);
-                  setIsRejected(!isRejected);
-                  feed = feed?.filter((card) => card._id !== user._id);
-                  dispatch(addFeed(feed));
+                onClick={async (e) => {
+                  await new Promise((res, rej) => {
+                    setIsIgnored(true);
+                    setTimeout(res, 100);
+                  });
+                  sendToUser("ignored", user._id);
                 }}
               >
                 Ignore
               </button>
-            </Link>
-            <Link className="relative left-0">
+            </div>
+            <div className="relative left-0">
               <div className="absolute inset-0 min-w-full bg-text"></div>
               <button
                 className={`font-semibold relative text-lg md:text-xl min-w-full border-2 border-text p-2 bg-brand-accept ${
@@ -177,16 +207,17 @@ const Card = ({ user }) => {
                     : "translate-x-2 -translate-y-2"
                 }`}
                 type="button"
-                onClick={() => {
-                  setIsInterested(!isInterested);
-                  setIsInterested(!isInterested);
-                  feed = feed?.filter((card) => card._id !== user._id);
-                  dispatch(addFeed(feed));
+                onClick={async (e) => {
+                  await new Promise((res, rej) => {
+                    setIsInterested(true);
+                    setTimeout(res, 100);
+                  });
+                  sendToUser("interested", user._id);
                 }}
               >
                 Interested
               </button>
-            </Link>
+            </div>
           </div>
         </div>
       </div>
