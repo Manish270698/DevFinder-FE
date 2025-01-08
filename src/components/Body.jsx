@@ -21,7 +21,6 @@ const Body = () => {
       });
       if (user) {
         dispatch(addUser(user.data.user));
-        console.log(user);
       }
       if (currentPath === "/login") {
         navigate("/");
@@ -30,10 +29,8 @@ const Body = () => {
       if (err.status === 401 && currentPath === "/") {
         navigate("/");
       } else if (err.status === 401) {
-        console.log("from Body");
         navigate("/login");
       } else {
-        console.log("Error from Body");
         navigate("/error");
       }
     }
