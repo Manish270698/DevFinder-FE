@@ -11,7 +11,7 @@ import CardShimmer from "./card/CardShimmer";
 const Feed = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const feed = useSelector((store) => store.feed);
+  const feed = useSelector((store) => store?.feed);
 
   const UserFeed = async () => {
     try {
@@ -23,7 +23,7 @@ const Feed = () => {
         const res = await axios.get(BASE_URL + "/user/feed", {
           withCredentials: true,
         });
-        dispatch(addFeed(res?.data));
+        res.data.length > 1 ? dispatch(addFeed(res?.data)) : "";
       }
     } catch (err) {
       if (err.status === 401) {
@@ -44,6 +44,10 @@ const Feed = () => {
   useEffect(() => {
     UserFeed();
   }, []);
+
+  useEffect(() => {
+    if (feed.length === 1) UserFeed();
+  }, [feed]);
   return feed && feed.length === 0 ? (
     <>
       <div className="flex h-screen justify-center items-center text-xl text-text border-">

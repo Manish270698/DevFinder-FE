@@ -24,12 +24,13 @@ const Card = ({ user }) => {
         navigate("/login");
         return;
       }
-      dispatch(removeFeed(_id));
+
       const res = await axios.post(
         BASE_URL + "/request/send/" + status + "/" + _id,
         {},
         { withCredentials: true }
       );
+      dispatch(removeFeed(_id));
       setIsIgnored(false);
       setIsInterested(false);
     } catch (err) {
