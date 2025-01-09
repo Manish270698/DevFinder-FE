@@ -138,10 +138,10 @@ const SignUp = () => {
                 placeholder="Password"
               />
               <div
-                onMouseDown={() => setVisible(!visible)}
-                onTouchStart={() => setVisible(!visible)}
-                onTouchEnd={() => setVisible(!visible)}
-                onMouseUp={() => setVisible(!visible)}
+                onMouseDown={() => setVisible(true)}
+                onTouchStart={() => setVisible(true)}
+                onTouchEnd={() => setVisible(false)}
+                onMouseUp={() => setVisible(false)}
                 className="flex bg-brand-white cursor-pointer items-center min-h-full border-2 border-l-0 border-text justify-center w-[10%]"
               >
                 {!visible ? (
