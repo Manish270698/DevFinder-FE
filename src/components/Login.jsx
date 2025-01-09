@@ -88,6 +88,7 @@ const Login = () => {
               />
               <div
                 onMouseDown={() => setVisible(true)}
+                onClick={() => setVisible(true)}
                 className="flex bg-brand-white cursor-pointer items-center min-h-full border-2 border-l-0 border-text justify-center w-[10%]"
               >
                 {!visible ? (
