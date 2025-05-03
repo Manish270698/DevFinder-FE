@@ -28,7 +28,6 @@ const ForgotPassword = () => {
         );
         setError(null);
       } catch (err) {
-        // console.log("data: ", data);
         setError(err.response?.data?.ERROR);
       }
     },

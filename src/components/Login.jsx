@@ -42,7 +42,7 @@ const Login = () => {
   });
   return (
     <div
-      className="flex justify-center mt-16 min-h-dvh"
+      className="flex justify-center mt-16 min-h-dvh text-brand-light"
       onMouseUp={() => setVisible(false)}
     >
       <div className="w-[90%] sm:w-3/5 lg:w-2/5 xl:w-2/6">
@@ -62,7 +62,7 @@ const Login = () => {
               <sup>*</sup>Email Address
             </label>
             <input
-              className="block border-2 p-2 border-text min-w-full text-lg focus:outline-none"
+              className="block border-2 p-2 border-text min-w-full text-lg focus:outline-none bg-brand-white"
               id="email"
               name="email"
               type="email"
@@ -77,7 +77,7 @@ const Login = () => {
             </label>
             <div className="min-w-full flex justify-center items-center">
               <input
-                className="block border-2 p-2 w-[90%] border-text text-lg border-r-0 focus:outline-none"
+                className="block border-2 p-2 w-[90%] border-text text-lg bg-brand-white border-r-0 focus:outline-none"
                 id="password"
                 name="password"
                 type={`${!visible ? "password" : "text"}`}

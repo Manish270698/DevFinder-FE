@@ -66,7 +66,7 @@ const SignUp = () => {
     },
   });
   return (
-    <div className="flex justify-center text-sm md:text-lg lg:lg:text-xl mt-10 md:mt-16 min-h-dvh">
+    <div className="flex justify-center text-sm md:text-lg lg:lg:text-xl mt-10 md:mt-16 min-h-dvh text-brand-light">
       <div className="w-[90%] sm:w-3/5 lg:w-1/2 xl:w-2/5">
         <div className="relative items-center">
           <div className="absolute inset-0 bg-text"></div>
@@ -84,7 +84,7 @@ const SignUp = () => {
               <sup>*</sup>First Name
             </label>
             <input
-              className="block border-2 p-2 border-text min-w-full focus:outline-none"
+              className="block border-2 p-2 border-text min-w-full focus:outline-none bg-brand-white"
               id="firstName"
               name="firstName"
               type="text"
@@ -98,7 +98,7 @@ const SignUp = () => {
               Last Name
             </label>
             <input
-              className="block border-2 p-2 border-text min-w-full focus:outline-none"
+              className="block border-2 p-2 border-text min-w-full focus:outline-none bg-brand-white"
               id="lastName"
               name="lastName"
               type="text"
@@ -112,7 +112,7 @@ const SignUp = () => {
               <sup>*</sup>Email Address
             </label>
             <input
-              className="block border-2 p-2 border-text min-w-full focus:outline-none"
+              className="block border-2 p-2 border-text min-w-full focus:outline-none bg-brand-white"
               id="emailId"
               name="emailId"
               type="emailId"
@@ -128,7 +128,7 @@ const SignUp = () => {
 
             <div className="min-w-full flex justify-center items-center">
               <input
-                className="block border-2 p-2 w-[90%] border-text border-r-0 focus:outline-none"
+                className="block border-2 p-2 w-[90%] border-text border-r-0 focus:outline-none bg-brand-white"
                 id="password"
                 name="password"
                 type={`${!visible ? "password" : "text"}`}
@@ -162,7 +162,7 @@ const SignUp = () => {
             <div className="min-w-full flex gap-4 justify-between">
               <div className="w-[50%]">
                 <input
-                  className="h-10 box-border p-2 block border-2 border-text min-w-full focus:outline-none"
+                  className="h-10 box-border p-2 block border-2 border-text min-w-full focus:outline-none bg-brand-white"
                   id="age"
                   name="age"
                   type="number"
@@ -197,7 +197,7 @@ const SignUp = () => {
               <p className="inline text-sm">(Comma separated)</p>
             </label>
             <input
-              className="block border-2 p-2 border-text min-w-full focus:outline-none"
+              className="block border-2 p-2 border-text min-w-full focus:outline-none bg-brand-white"
               id="skills"
               name="skills"
               type="text"
@@ -211,7 +211,7 @@ const SignUp = () => {
               Image URL
             </label>
             <input
-              className="block border-2 p-2 border-text min-w-full focus:outline-none"
+              className="block border-2 p-2 border-text min-w-full focus:outline-none bg-brand-white"
               id="photoUrl"
               name="photoUrl"
               type="text"
@@ -225,7 +225,7 @@ const SignUp = () => {
               <sup>*</sup>About
             </label>
             <textarea
-              className="block border-2 p-2 max-h-20 border-text min-w-full focus:outline-none"
+              className="block border-2 p-2 max-h-20 border-text min-w-full focus:outline-none bg-brand-white"
               id="about"
               name="about"
               type="text"

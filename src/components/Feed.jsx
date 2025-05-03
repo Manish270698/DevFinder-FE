@@ -4,7 +4,7 @@ import { BASE_URL } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../utils/feedSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { addUser } from "../utils/userSlice";
 import CardShimmer from "./card/CardShimmer";
 
@@ -12,6 +12,7 @@ const Feed = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const feed = useSelector((store) => store?.feed);
+  const [toUpdate, setToUpdate] = useState(false);
 
   const UserFeed = async () => {
     try {
@@ -23,7 +24,8 @@ const Feed = () => {
         const res = await axios.get(BASE_URL + "/user/feed", {
           withCredentials: true,
         });
-        res.data.length > 1 ? dispatch(addFeed(res?.data)) : "";
+        dispatch(addFeed(res?.data));
+        res.data.length > 1 ? setToUpdate(!toUpdate) : "";
       }
     } catch (err) {
       if (err.status === 401) {
@@ -47,7 +49,7 @@ const Feed = () => {
 
   useEffect(() => {
     if (feed.length === 1) UserFeed();
-  }, [feed]);
+  }, [feed, toUpdate]);
   return feed && feed.length === 0 ? (
     <>
       <div className="flex h-screen justify-center items-center text-xl text-text border-">

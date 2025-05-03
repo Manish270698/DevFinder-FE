@@ -13,7 +13,6 @@ const EditProfile = () => {
   const [seeToast, setSeeToast] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
-  console.log(user.gender);
   const formik = useFormik({
     initialValues: {
       firstName: user.firstName,
@@ -32,20 +31,8 @@ const EditProfile = () => {
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        console.log("values: ", values);
         let { firstName, lastName, age, gender, skills, photoUrl, about } =
           values;
-        // skills = skills.split(",").map((e) => e.trim());
-        console.log("skills");
-        console.log({
-          firstName,
-          lastName,
-          age,
-          gender,
-          skills,
-          photoUrl,
-          about,
-        });
         const res = await axios.patch(
           BASE_URL + "/profile/edit",
           {
@@ -69,7 +56,7 @@ const EditProfile = () => {
     },
   });
   return (
-    <div className="flex flex-wrap justify-center gap-x-8">
+    <div className="flex flex-wrap justify-center gap-x-8 text-brand-light">
       {seeToast && <Toast />}
       <div className="flex justify-center text-sm md:text-md lg:text-xl mt-10 md:mt-16 min-h-dvh w-[90%] md:w-1/3 xl:w-2/5">
         <div className="">
@@ -89,7 +76,7 @@ const EditProfile = () => {
                 <sup>*</sup>First Name
               </label>
               <input
-                className="block border-2 p-1 md:p-2 border-text min-w-full focus:outline-none"
+                className="block border-2 p-1 md:p-2 border-text min-w-full focus:outline-none bg-brand-white"
                 id="firstName"
                 name="firstName"
                 type="text"
@@ -103,7 +90,7 @@ const EditProfile = () => {
                 Last Name
               </label>
               <input
-                className="block border-2 p-1 md:p-2 border-text min-w-full focus:outline-none"
+                className="block border-2 p-1 md:p-2 border-text min-w-full focus:outline-none bg-brand-white"
                 id="lastName"
                 name="lastName"
                 type="text"
@@ -117,7 +104,7 @@ const EditProfile = () => {
                 Email Address
               </label>
               <input
-                className="block border-2 p-1 md:p-2 text-text-light border-text bg-brand-shimmer min-w-full focus:outline-none"
+                className="block border-2 p-1 md:p-2 text-text-light border-text bg-brand-white min-w-full focus:outline-none"
                 id="emailId"
                 name="emailId"
                 type="emailId"
@@ -139,7 +126,7 @@ const EditProfile = () => {
               <div className="min-w-full flex gap-4 justify-between">
                 <div className="w-[50%]">
                   <input
-                    className="h-10 box-border p-1 md:p-2 block border-2 border-text min-w-full focus:outline-none"
+                    className="h-10 box-border p-1 md:p-2 block border-2 border-text min-w-full focus:outline-none bg-brand-white"
                     id="age"
                     name="age"
                     type="number"
@@ -174,7 +161,7 @@ const EditProfile = () => {
                 <p className="inline text-sm">(Comma separated)</p>
               </label>
               <input
-                className="block border-2 p-1 md:p-2 border-text min-w-full focus:outline-none"
+                className="block border-2 p-1 md:p-2 border-text min-w-full focus:outline-none bg-brand-white"
                 id="skills"
                 name="skills"
                 type="text"
@@ -194,7 +181,7 @@ const EditProfile = () => {
                 Image URL
               </label>
               <input
-                className="block border-2 p-1 md:p-2 border-text min-w-full focus:outline-none"
+                className="block border-2 p-1 md:p-2 border-text min-w-full focus:outline-none bg-brand-white"
                 id="photoUrl"
                 name="photoUrl"
                 type="text"
@@ -208,7 +195,7 @@ const EditProfile = () => {
                 <sup>*</sup>About
               </label>
               <textarea
-                className="block border-2 p-1 md:p-2 max-h-20 border-text min-w-full focus:outline-none"
+                className="block border-2 p-1 md:p-2 max-h-20 border-text min-w-full focus:outline-none bg-brand-white"
                 id="about"
                 name="about"
                 type="text"

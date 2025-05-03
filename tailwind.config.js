@@ -4,7 +4,7 @@ export default {
   // daisyui: {
   //   themes: ["light", "night"],
   // },
-  plugins: [],
+  plugins: [require("daisyui")],
   darkMode: "selector",
   theme: {
     extend: {},
@@ -17,6 +17,8 @@ export default {
         reject: "#f75134",
         accept: "#25e31b",
         shimmer: "#e8ebe9",
+        message: "#3480eb",
+        sendMessage: "#349beb",
       },
       text: {
         DEFAULT: "#000000",

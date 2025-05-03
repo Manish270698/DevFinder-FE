@@ -10,6 +10,7 @@ import Error from "./components/Error";
 import Profile from "./components/profile/Profile";
 import Connections from "./components/connections/Connections";
 import Requests from "./components/requests/Requests";
+import Chat from "./components/connections/chat/Chat";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
               <Route path="/connections" element={<Connections />} />
               <Route path="/requests" element={<Requests />} />
               <Route path="/forgotpassword" element={<ForgotPassword />} />
+              <Route path="/chat/:targetUserId/:name" element={<Chat />} />
             </Route>
           </Routes>
         </BrowserRouter>

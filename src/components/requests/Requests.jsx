@@ -30,7 +30,7 @@ const Requests = () => {
   };
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center text-brand-light">
       <div className="w-[90%] relative sm:w-3/5 lg:w-1/2 xl:w-2/5 mt-10 md:mt-16 min-h-dvh">
         <div className="relative items-center">
           <div className="absolute inset-0 bg-text"></div>
