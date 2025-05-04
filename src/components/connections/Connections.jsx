@@ -14,7 +14,6 @@ const Connections = () => {
         withCredentials: true,
       });
       setConnections(res.data.data);
-      console.log(connections);
     } catch (err) {
       navigate("/error");
     }

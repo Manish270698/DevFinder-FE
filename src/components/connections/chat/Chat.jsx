@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { createSocketConnection } from "../../../utils/socket";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../../../constants";
 
 const Chat = () => {
   const params = useParams();
@@ -10,7 +12,22 @@ const Chat = () => {
   const chatContainerRef = useRef(null);
   const user = useSelector((store) => store.user);
   const userId = user?._id;
-  console.log(params);
+
+  const fetchChatMessages = async () => {
+    const chat = await axios.get(BASE_URL + "/chat/" + params.targetUserId, {
+      withCredentials: true,
+    });
+
+    const chatMessages = chat?.data?.messages?.map((message) => {
+      return {
+        text: message?.text,
+        sender: message?.senderId?._id,
+        messageSentTime: message?.createdAt,
+      };
+    });
+
+    setMessages(chatMessages);
+  };
 
   const handleSend = () => {
     if (input.trim()) {
@@ -58,6 +75,10 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    fetchChatMessages();
+  }, []);
+
+  useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
@@ -70,15 +91,12 @@ const Chat = () => {
     // join chat as soon as page loads. joinChat event is emitted as soon as page loads
     socket.emit("joinChat", { userId, targetUserId: params.targetUserId });
 
-    socket.on(
-      "messageReceived",
-      ({ senderId, receiverId, text, timestamp }) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { text: text, sender: senderId, messageSentTime: timestamp },
-        ]);
-      }
-    );
+    socket.on("messageReceived", ({ senderId, text, timestamp }) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: text, sender: senderId, messageSentTime: timestamp },
+      ]);
+    });
 
     // disconnect when component unloads
     return () => socket.disconnect();
