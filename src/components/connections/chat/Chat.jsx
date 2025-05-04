@@ -40,8 +40,6 @@ const Chat = () => {
         sender: userId,
         messageSentTime: new Date().toISOString(),
       };
-
-      setMessages((prevMessages) => [...prevMessages, newMessage]); // Instantly show message
       sendMessage(input); // Send to server
       setInput(""); // Clear input field
     }
