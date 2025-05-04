@@ -13,39 +13,52 @@ const Chat = () => {
   const user = useSelector((store) => store.user);
   const userId = user?._id;
 
+  // Fetch messages from the database
   const fetchChatMessages = async () => {
-    const chat = await axios.get(BASE_URL + "/chat/" + params.targetUserId, {
-      withCredentials: true,
-    });
+    try {
+      const chat = await axios.get(`${BASE_URL}/chat/${params.targetUserId}`, {
+        withCredentials: true,
+      });
 
-    const chatMessages = chat?.data?.messages?.map((message) => {
-      return {
+      const chatMessages = chat?.data?.messages?.map((message) => ({
         text: message?.text,
         sender: message?.senderId?._id,
         messageSentTime: message?.createdAt,
-      };
-    });
+      }));
 
-    setMessages(chatMessages);
-  };
-
-  const handleSend = () => {
-    if (input.trim()) {
-      //   setMessages([...messages, { text: input, sender: "You" }]);
-      setInput("");
+      setMessages(chatMessages);
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
     }
   };
 
-  const sendMessage = () => {
+  // Optimistically update UI before sending message
+  const handleSend = () => {
+    if (input.trim()) {
+      const newMessage = {
+        text: input,
+        sender: userId,
+        messageSentTime: new Date().toISOString(),
+      };
+
+      setMessages((prevMessages) => [...prevMessages, newMessage]); // Instantly show message
+      sendMessage(input); // Send to server
+      setInput(""); // Clear input field
+    }
+  };
+
+  // Sending message via Socket.io
+  const sendMessage = (messageText) => {
     const socket = createSocketConnection();
     socket.emit("sendMessage", {
       userId,
       targetUserId: params.targetUserId,
-      text: input,
-      timestamp: new Date().toISOString(), // Sends timestamp in ISO format
+      text: messageText,
+      timestamp: new Date().toISOString(),
     });
   };
 
+  // Format timestamp to match WhatsApp-style display
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     const now = new Date();
@@ -88,17 +101,16 @@ const Chat = () => {
   useEffect(() => {
     if (!userId) return;
     const socket = createSocketConnection();
-    // join chat as soon as page loads. joinChat event is emitted as soon as page loads
+
     socket.emit("joinChat", { userId, targetUserId: params.targetUserId });
 
     socket.on("messageReceived", ({ senderId, text, timestamp }) => {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: text, sender: senderId, messageSentTime: timestamp },
+        { text, sender: senderId, messageSentTime: timestamp },
       ]);
     });
 
-    // disconnect when component unloads
     return () => socket.disconnect();
   }, [userId, params.targetUserId]);
 
@@ -115,27 +127,17 @@ const Chat = () => {
             className="flex-1 overflow-y-auto p-4 space-y-2 text-brand-light"
             ref={chatContainerRef}
           >
-            {/* Dynamic Messages */}
             {messages.map((msg, index) => (
               <div
                 key={index}
                 className={`chat ${
-                  msg.sender === userId
-                    ? "chat-end"
-                    : msg.sender === params.targetUserId
-                    ? "chat-start"
-                    : ""
+                  msg.sender === userId ? "chat-end" : "chat-start"
                 } `}
               >
                 <div className="chat-header">
                   {msg.sender === userId
                     ? "You"
-                    : msg.sender === params.targetUserId
-                    ? params.name.split("_").join(" ").length <= 15
-                      ? params.name.split("_").join(" ")
-                      : params.name.split("_").join(" ").substring(0, 12) +
-                        "..."
-                    : ""}
+                    : params.name.split("_").join(" ").substring(0, 12) + "..."}
                   <time className="text-xs opacity-50">
                     {formatTimestamp(msg.messageSentTime)}
                   </time>
@@ -148,17 +150,12 @@ const Chat = () => {
                   }`}
                 >
                   {msg.text
-                    .trim() // Remove leading/trailing spaces and newlines
+                    .trim()
                     .split("\n")
-                    .filter(
-                      (line, index, arr) =>
-                        line.trim() !== "" || index < arr.length - 1
-                    ) // Ignore pure empty lines at the end
-                    .map((line, i, arr) => (
+                    .map((line, i) => (
                       <React.Fragment key={i}>
                         {line}
-                        {i < arr.length - 1 && <br />}{" "}
-                        {/* Only add `<br />` if it's NOT the last valid line */}
+                        {i < msg.text.length - 1 && <br />}
                       </React.Fragment>
                     ))}
                 </div>
@@ -172,16 +169,11 @@ const Chat = () => {
               type="text"
               value={input}
               placeholder="Write your message"
-              onChange={(e) => {
-                setInput(e.target.value);
-              }}
+              onChange={(e) => setInput(e.target.value)}
             />
             <button
-              className="ml-2 px-4 py-2 bg-blue-500 border-brand-light text-white rounded-md border-2 bg-brand-sendMessage hover:bg-brand-message"
-              onClick={() => {
-                handleSend();
-                sendMessage();
-              }}
+              className="ml-2 px-4 py-2 bg-brand-sendMessage hover:bg-brand-message"
+              onClick={handleSend}
             >
               Send
             </button>
