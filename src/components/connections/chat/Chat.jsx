@@ -35,11 +35,6 @@ const Chat = () => {
   // Optimistically update UI before sending message
   const handleSend = () => {
     if (input.trim()) {
-      const newMessage = {
-        text: input,
-        sender: userId,
-        messageSentTime: new Date().toISOString(),
-      };
       sendMessage(input); // Send to server
       setInput(""); // Clear input field
     }
