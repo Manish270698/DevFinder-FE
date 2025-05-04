@@ -35,6 +35,13 @@ const Chat = () => {
   // Optimistically update UI before sending message
   const handleSend = () => {
     if (input.trim()) {
+      const newMessage = {
+        text: input,
+        sender: userId,
+        messageSentTime: new Date().toISOString(),
+      };
+
+      setMessages((prevMessages) => [...prevMessages, newMessage]); // Instantly show message
       sendMessage(input); // Send to server
       setInput(""); // Clear input field
     }
@@ -98,10 +105,11 @@ const Chat = () => {
     socket.emit("joinChat", { userId, targetUserId: params.targetUserId });
 
     socket.on("messageReceived", ({ senderId, text, timestamp }) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text, sender: senderId, messageSentTime: timestamp },
-      ]);
+      if (senderId !== userId)
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text, sender: senderId, messageSentTime: timestamp },
+        ]);
     });
 
     return () => socket.disconnect();
@@ -130,7 +138,12 @@ const Chat = () => {
                 <div className="chat-header">
                   {msg.sender === userId
                     ? "You"
-                    : params.name.split("_").join(" ").substring(0, 12) + "..."}
+                    : msg.sender === params.targetUserId
+                    ? params.name.split("_").join(" ").length <= 15
+                      ? params.name.split("_").join(" ")
+                      : params.name.split("_").join(" ").substring(0, 12) +
+                        "..."
+                    : ""}
                   <time className="text-xs opacity-50">
                     {formatTimestamp(msg.messageSentTime)}
                   </time>
